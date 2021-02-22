@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+ï»¿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -12,7 +12,7 @@ class FMenuBarBuilder;
 class FSamplePluginModule : public IModuleInterface
 {
 private:
-	// ƒƒjƒ…[‚ÌŠg’£ƒ|ƒCƒ“ƒg.
+	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®æ‹¡å¼µãƒã‚¤ãƒ³ãƒˆ.
 	TSharedPtr<FExtender> Extender;
 
 public:
@@ -22,13 +22,13 @@ public:
 	// End of IModuleInterface interface.
 
 private:
-	// ƒƒjƒ…[ƒo[‚ÉŠg’£“à—e‚ğ“o˜^.
+	// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ãƒãƒ¼ã«æ‹¡å¼µå†…å®¹ã‚’ç™»éŒ².
 	void OnWindowMenuBarExtension(FMenuBarBuilder& MenuBarBuilder);
 
-	// ƒvƒ‹ƒ_ƒEƒ“ƒƒjƒ…[‚Ì“o˜^.
+	// ãƒ—ãƒ«ãƒ€ã‚¦ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ç™»éŒ².
 	void OnPulldownMenuExtension(FMenuBuilder& MenuBuilder);
 
-	// ƒvƒ‹ƒ_ƒEƒ“ƒƒjƒ…[ˆÈ‰º‚ÌƒTƒuƒƒjƒ…[‚ğ“o˜^.
+	// ãƒ—ãƒ«ãƒ€ã‚¦ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ä»¥ä¸‹ã®ã‚µãƒ–ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’ç™»éŒ².
 	void HandleRegisterSubMenu1(FMenuBuilder& MenuBuilder);
 	void HandleRegisterSubMenu2(FMenuBuilder& MenuBuilder);
 	void HandleRegisterSubMenu3(FMenuBuilder& MenuBuilder);
