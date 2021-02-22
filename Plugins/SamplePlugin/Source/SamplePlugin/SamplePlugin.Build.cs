@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
@@ -23,7 +23,7 @@ public class SamplePlugin : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				"LevelEditor",	// �ǉ�.
+				"LevelEditor",	// 追加.
 			}
 			);
 	}
