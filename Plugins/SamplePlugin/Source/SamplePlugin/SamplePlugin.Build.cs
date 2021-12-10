@@ -24,6 +24,7 @@ public class SamplePlugin : ModuleRules
 				"Slate",
 				"SlateCore",
 				"LevelEditor",	// 追加.
+				"WorkspaceMenuStructure", // 追加.
 			}
 			);
 	}

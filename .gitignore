@@ -1,7 +1,11 @@
-# Visual Studio 2015 user specific files
+# Visual Studio user specific files
 .vs/
 
-# Visual Studio 2015 database file
+# Rider for Unreal Engine user specific files
+.idea/
+*.user
+
+# Visual Studio database file
 *.VC.db
 
 # Compiled Object files
@@ -53,6 +57,7 @@ Binaries/*
 Plugins/*/Binaries/*
 
 # Builds
+Build/
 Build/*
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
@@ -75,3 +80,6 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Python modules
+Plugins/*/Content/Python/*

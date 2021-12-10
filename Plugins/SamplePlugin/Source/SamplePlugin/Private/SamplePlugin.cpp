@@ -3,9 +3,17 @@
 #include "SamplePlugin.h"
 #include "LevelEditor.h"
 #include "Framework/MultiBox/MultiBoxBuilder.h"
+#include "WorkspaceMenuStructureModule.h"
+#include "WorkspaceMenuStructure.h"
+#include "Widgets/Docking/SDockTab.h"
 
 #define LOCTEXT_NAMESPACE "FSamplePluginModule"
-#define LEVEL_EDITOR_NAME "LevelEditor"
+
+namespace SamplePluginDefine
+{
+	static const FName LevelEditorName = TEXT("LevelEditor");
+	static const FName TabName = TEXT("TestTab");
+}
 
 void FSamplePluginModule::StartupModule()
 {
@@ -14,34 +22,43 @@ void FSamplePluginModule::StartupModule()
 		return;
 	}
 
-	FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>(LEVEL_EDITOR_NAME);
-	Extender = MakeShareable(new FExtender());
+	FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>(SamplePluginDefine::LevelEditorName);
+	Extender = MakeShared<FExtender>();
 	if (Extender.IsValid())
 	{
 		Extender->AddMenuBarExtension(
 			"Help",
 			EExtensionHook::After,
-			NULL,
+			nullptr,
 			FMenuBarExtensionDelegate::CreateRaw(this, &FSamplePluginModule::OnWindowMenuBarExtension)
 		);
 	}
 
-	TSharedPtr<FExtensibilityManager> MenuExtensibilityManager = LevelEditorModule.GetMenuExtensibilityManager();
+	const TSharedRef<FGlobalTabmanager> GlobalTabManager = FGlobalTabmanager::Get();
+	GlobalTabManager->RegisterTabSpawner(
+		SamplePluginDefine::TabName,
+		FOnSpawnTab::CreateRaw(this, &FSamplePluginModule::HandleRegisterTabSpawner)
+	)
+	.SetDisplayName(FText::FromName(SamplePluginDefine::TabName))
+	.SetGroup(WorkspaceMenu::GetMenuStructure().GetLevelEditorCategory())
+	.SetTooltipText(LOCTEXT("TabTooltipText", "This is a test tab."));
+
+	const TSharedPtr<FExtensibilityManager> MenuExtensibilityManager = LevelEditorModule.GetMenuExtensibilityManager();
 	if (MenuExtensibilityManager.IsValid())
 	{
-		LevelEditorModule.GetMenuExtensibilityManager()->AddExtender(Extender);
+		MenuExtensibilityManager->AddExtender(Extender);
 	}
 }
 
 void FSamplePluginModule::ShutdownModule()
 {
-	if (Extender.IsValid() && FModuleManager::Get().IsModuleLoaded(LEVEL_EDITOR_NAME))
+	if (Extender.IsValid() && FModuleManager::Get().IsModuleLoaded(SamplePluginDefine::LevelEditorName))
 	{
-		FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>(LEVEL_EDITOR_NAME);
-		TSharedPtr<FExtensibilityManager> MenuExtensibilityManager = LevelEditorModule.GetMenuExtensibilityManager();
+		FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>(SamplePluginDefine::LevelEditorName);
+		const TSharedPtr<FExtensibilityManager> MenuExtensibilityManager = LevelEditorModule.GetMenuExtensibilityManager();
 		if (MenuExtensibilityManager.IsValid())
 		{
-			LevelEditorModule.GetToolBarExtensibilityManager()->RemoveExtender(Extender);
+			MenuExtensibilityManager->RemoveExtender(Extender);
 		}
 	}
 }
@@ -57,7 +74,7 @@ void FSamplePluginModule::OnWindowMenuBarExtension(FMenuBarBuilder& MenuBarBuild
 
 void FSamplePluginModule::OnPulldownMenuExtension(FMenuBuilder& MenuBuilder)
 {
-	MenuBuilder.BeginSection("SectionHook", LOCTEXT("SectionNameA", "Section A"));
+	MenuBuilder.BeginSection(TEXT("SectionHook"), LOCTEXT("SectionNameA", "Section A"));
 
 	MenuBuilder.AddSubMenu(
 		LOCTEXT("PulldownMenuTitle1", "Sub Menu 1"),
@@ -72,13 +89,19 @@ void FSamplePluginModule::OnPulldownMenuExtension(FMenuBuilder& MenuBuilder)
 	);
 
 	MenuBuilder.EndSection();
-	MenuBuilder.BeginSection("SectionHook", LOCTEXT("SectionNameB", "Section B"));
+	MenuBuilder.BeginSection(TEXT("SectionHook"), LOCTEXT("SectionNameB", "Section B"));
 
 	MenuBuilder.AddSubMenu(
 		LOCTEXT("PulldownMenuTitle3", "Sub Menu 3"),
 		LOCTEXT("PulldownMenuToolTip3", "A description of this submenu is given here."),
 		FNewMenuDelegate::CreateRaw(this, &FSamplePluginModule::HandleRegisterSubMenu3)
 	);
+
+	MenuBuilder.EndSection();
+	MenuBuilder.BeginSection(TEXT("SectionHook"), LOCTEXT("SectionNameC", "Section C"));
+	
+	const TSharedRef<FGlobalTabmanager> GlobalTabManager = FGlobalTabmanager::Get();
+	GlobalTabManager->PopulateTabSpawnerMenu(MenuBuilder, SamplePluginDefine::TabName);
 
 	MenuBuilder.EndSection();
 }
@@ -142,7 +165,18 @@ void FSamplePluginModule::HandleRegisterSubMenu3(FMenuBuilder& MenuBuilder)
 	);
 }
 
-#undef LEVEL_EDITOR_NAME
+TSharedRef<SDockTab> FSamplePluginModule::HandleRegisterTabSpawner(const FSpawnTabArgs& TabSpawnArgs)
+{
+	TSharedRef<SDockTab> SpawnedTab = SNew(SDockTab)
+		.TabRole(ETabRole::NomadTab)
+		[
+			SNew(STextBlock)
+			.Text(LOCTEXT("TestTabText", "This is a test tab."))
+		];
+		
+	return SpawnedTab;
+}
+
 #undef LOCTEXT_NAMESPACE
 	
 IMPLEMENT_MODULE(FSamplePluginModule, SamplePlugin)

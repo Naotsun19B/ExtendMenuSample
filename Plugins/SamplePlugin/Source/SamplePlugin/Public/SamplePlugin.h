@@ -11,10 +11,6 @@ class FMenuBarBuilder;
 
 class FSamplePluginModule : public IModuleInterface
 {
-private:
-	// メニューの拡張ポイント.
-	TSharedPtr<FExtender> Extender;
-
 public:
 	// IModuleInterface interface.
 	virtual void StartupModule() override;
@@ -32,4 +28,11 @@ private:
 	void HandleRegisterSubMenu1(FMenuBuilder& MenuBuilder);
 	void HandleRegisterSubMenu2(FMenuBuilder& MenuBuilder);
 	void HandleRegisterSubMenu3(FMenuBuilder& MenuBuilder);
+
+	// タブが生成されるときに呼ばれる.
+	TSharedRef<SDockTab> HandleRegisterTabSpawner(const FSpawnTabArgs& TabSpawnArgs);
+	
+private:
+	// メニューの拡張ポイント.
+	TSharedPtr<FExtender> Extender;
 };
