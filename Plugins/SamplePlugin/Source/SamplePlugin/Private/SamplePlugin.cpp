@@ -28,6 +28,12 @@ void FSamplePluginModule::StartupModule()
 			FMenuBarExtensionDelegate::CreateRaw(this, &FSamplePluginModule::OnWindowMenuBarExtension)
 		);
 	}
+	
+	const TSharedPtr<FExtensibilityManager> MenuExtensibilityManager = LevelEditorModule.GetMenuExtensibilityManager();
+	if (MenuExtensibilityManager.IsValid())
+	{
+		MenuExtensibilityManager->AddExtender(Extender);
+	}
 
 	const TSharedRef<FGlobalTabmanager> GlobalTabManager = FGlobalTabmanager::Get();
 	GlobalTabManager->RegisterTabSpawner(
@@ -37,16 +43,13 @@ void FSamplePluginModule::StartupModule()
 	.SetDisplayName(FText::FromName(SamplePluginDefine::TabName))
 	.SetGroup(WorkspaceMenu::GetMenuStructure().GetLevelEditorCategory())
 	.SetTooltipText(LOCTEXT("TabTooltipText", "This is a test tab."));
-
-	const TSharedPtr<FExtensibilityManager> MenuExtensibilityManager = LevelEditorModule.GetMenuExtensibilityManager();
-	if (MenuExtensibilityManager.IsValid())
-	{
-		MenuExtensibilityManager->AddExtender(Extender);
-	}
 }
 
 void FSamplePluginModule::ShutdownModule()
 {
+	const TSharedRef<FGlobalTabmanager> GlobalTabManager = FGlobalTabmanager::Get();
+	GlobalTabManager->UnregisterTabSpawner(SamplePluginDefine::TabName);
+	
 	if (Extender.IsValid() && FModuleManager::Get().IsModuleLoaded(SamplePluginDefine::LevelEditorName))
 	{
 		FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>(SamplePluginDefine::LevelEditorName);
