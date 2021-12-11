@@ -17,11 +17,6 @@ namespace SamplePluginDefine
 
 void FSamplePluginModule::StartupModule()
 {
-	if (IsRunningCommandlet())
-	{
-		return;
-	}
-
 	FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>(SamplePluginDefine::LevelEditorName);
 	Extender = MakeShared<FExtender>();
 	if (Extender.IsValid())
